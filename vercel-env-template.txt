@@ -1,0 +1,23 @@
+# Vercel 環境変数設定用テンプレート
+# Vercel → Project → Settings → Environment Variables に
+# 1行ずつ Name / Value を入力してください。
+# Value は .env.local からコピー（本番公開時は Stripe を live キーに変更）
+
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_STORAGE_BUCKET=images
+
+STRIPE_SECRET_KEY=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+ADMIN_NOTIFY_EMAIL=
+
+NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
+CRON_SECRET=
+ADMIN_PASSWORD=
+ADMIN_SESSION_SECRET=
+RECEIPT_ISSUER_NAME=My Stage　神谷京花
