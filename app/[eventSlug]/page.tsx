@@ -490,23 +490,23 @@ export default async function EventPage({ params }: PageProps) {
       {openSessions.length > 0 && (
       <section className="relative px-5 py-16 md:py-24">
         <div className="relative mx-auto max-w-4xl">
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-cta-gradient px-6 py-14 text-center shadow-soft md:px-12 md:py-20">
+          <div className="relative overflow-hidden rounded-[2.5rem] bg-cta-section-gradient px-6 py-14 text-center shadow-soft md:px-12 md:py-20">
             <SoftBlob
               color="#FFFFFF"
-              className="pointer-events-none absolute -top-20 -right-20 h-72 w-72 opacity-40"
+              className="pointer-events-none absolute -top-20 -right-20 h-72 w-72 opacity-15"
             />
             <SoftBlob
               color="#FFE4D9"
-              className="pointer-events-none absolute -bottom-20 -left-20 h-72 w-72 opacity-50"
+              className="pointer-events-none absolute -bottom-20 -left-20 h-72 w-72 opacity-20"
             />
-            <HydrangeaCluster className="pointer-events-none absolute right-4 top-4 h-20 w-20 opacity-50 md:h-28 md:w-28" />
-            <Leaf className="pointer-events-none absolute left-6 bottom-4 h-20 w-14 -rotate-12 opacity-50 md:h-28 md:w-20" />
+            <HydrangeaCluster className="pointer-events-none absolute right-4 top-4 h-20 w-20 opacity-30 md:h-28 md:w-28" />
+            <Leaf className="pointer-events-none absolute left-6 bottom-4 h-20 w-14 -rotate-12 opacity-30 md:h-28 md:w-20" />
 
             <div className="relative">
-              <p className="mb-3 text-xs font-bold tracking-[0.3em] text-white/90 md:text-sm">
+              <p className="mb-3 text-xs font-bold tracking-[0.3em] text-white md:text-sm">
                 READY?
               </p>
-              <h2 className="mb-6 font-serif text-2xl font-bold text-white drop-shadow md:text-4xl">
+              <h2 className="mb-6 font-serif text-2xl font-bold text-white drop-shadow-md md:text-4xl">
                 あなたのご参加を
                 <br className="md:hidden" />
                 お待ちしています
@@ -531,7 +531,7 @@ export default async function EventPage({ params }: PageProps) {
                         </div>
                       </div>
                     ))}
-                    <p className="text-xs text-white/90 md:text-sm">
+                    <p className="text-xs text-white md:text-sm">
                       お申し込み時に該当する区分をお選びください
                     </p>
                   </div>
@@ -545,12 +545,12 @@ export default async function EventPage({ params }: PageProps) {
                     </div>
                   </div>
                 )}
-                <div className="mt-3 text-xs text-white/90 md:text-sm">
+                <div className="mt-3 text-xs text-white md:text-sm">
                   申込期限は各日程の前日23:59まで
                 </div>
               </div>
 
-              <p className="text-sm text-white/90 md:text-base">
+              <p className="text-sm text-white md:text-base">
                 上の「開催日程を選ぶ」から、ご希望の日時をお選びください。
               </p>
             </div>

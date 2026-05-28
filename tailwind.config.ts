@@ -58,6 +58,8 @@ const config: Config = {
           "linear-gradient(180deg, #F8FBFD 0%, #EDF6FB 40%, #FFFFFF 100%)",
         "cta-gradient":
           "linear-gradient(135deg, #A8D4E5 0%, #C9E4F0 50%, #F5A99E 130%)",
+        "cta-section-gradient":
+          "linear-gradient(135deg, #3D8AA8 0%, #5FA9C2 45%, #D9786B 100%)",
         "cta-gradient-hover":
           "linear-gradient(135deg, #5FA9C2 0%, #A8D4E5 50%, #F5A99E 130%)",
         "soft-radial":
