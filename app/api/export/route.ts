@@ -79,6 +79,7 @@ export async function GET(req: NextRequest) {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
       "Content-Disposition": `attachment; filename="${filename}"`,
+      "Cache-Control": "no-store, no-cache, must-revalidate",
     },
   });
 }

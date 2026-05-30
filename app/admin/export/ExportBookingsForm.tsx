@@ -224,12 +224,16 @@ export default function ExportBookingsForm({ events, sessions }: Props) {
       </div>
 
       <div className="flex flex-wrap items-center gap-3 border-t border-slate-200 pt-6">
-        <a
-          href={exportUrl}
+        <button
+          type="button"
+          onClick={() => {
+            const url = `${exportUrl}&_=${Date.now()}`;
+            window.location.href = url;
+          }}
           className="inline-flex items-center justify-center rounded-lg bg-brand px-6 py-3 text-sm font-bold text-white hover:bg-brand-dark"
         >
           CSVをダウンロード
-        </a>
+        </button>
         <p className="text-xs text-slate-500">
           Excel で開く場合は UTF-8（BOM付き）で保存されています
         </p>
