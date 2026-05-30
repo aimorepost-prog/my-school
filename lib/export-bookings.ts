@@ -1,12 +1,21 @@
 import type { Booking, BookingAnswers, PaymentStatus } from "@/types";
+import { resolveEventPrice } from "@/lib/event-pricing";
 
 const JST = "Asia/Tokyo";
+
+/** 講座 slug → 申込番号の略号（1文字） */
+const SLUG_PREFIX: Record<string, string> = {
+  taikenkai: "T",
+  "kiso-koza": "K",
+  "osarai-kai": "O",
+  "sample-event": "S",
+};
 
 export type ExportMode = "bookings" | "attendees";
 export type ExportPaymentFilter = "all" | PaymentStatus;
 
 export interface ExportBookingRow extends Booking {
-  events: { title: string; slug: string } | null;
+  events: { title: string; slug: string; price: number } | null;
   event_sessions: { starts_at: string; ends_at: string | null } | null;
 }
 
@@ -105,16 +114,87 @@ function formatJpDateTime(iso: string): string {
   return new Date(iso).toLocaleString("ja-JP", { timeZone: JST });
 }
 
-function selectedPrice(row: ExportBookingRow): number {
+function formatYmdJst(iso: string): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: JST,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date(iso));
+  const y = parts.find((p) => p.type === "year")?.value ?? "";
+  const m = parts.find((p) => p.type === "month")?.value ?? "";
+  const d = parts.find((p) => p.type === "day")?.value ?? "";
+  return `${y}${m}${d}`;
+}
+
+function slugToPrefix(slug: string): string {
+  if (SLUG_PREFIX[slug]) return SLUG_PREFIX[slug];
+  const base = slug.replace(/-/g, "").slice(0, 2).toUpperCase();
+  return base || "EV";
+}
+
+/** 受講費（answers 未保存の旧データは講座料金から推定） */
+export function resolveBookingPrice(row: ExportBookingRow): number {
   const answers = row.answers as BookingAnswers | undefined;
-  return answers?.selected_price ?? 0;
+  if (answers?.selected_price != null && answers.selected_price > 0) {
+    return answers.selected_price;
+  }
+
+  const slug = row.events?.slug;
+  const defaultPrice = row.events?.price ?? 0;
+
+  if (slug && answers?.price_tier) {
+    const tierResult = resolveEventPrice(slug, defaultPrice, answers.price_tier);
+    if (tierResult.ok) return tierResult.price;
+  }
+
+  return defaultPrice;
+}
+
+/**
+ * 申込番号: T20260609-01（略号 + 受講日 + 連番）
+ * 連番は2桁から始まり、100件・1000件超でも桁が自動で増える（01 … 9999 … 12345）
+ */
+export function assignBookingNumbers(
+  rows: ExportBookingRow[]
+): Map<string, string> {
+  const sorted = [...rows].sort((a, b) => {
+    const dateA = a.event_sessions?.starts_at ?? a.created_at;
+    const dateB = b.event_sessions?.starts_at ?? b.created_at;
+    const cmp = dateA.localeCompare(dateB);
+    if (cmp !== 0) return cmp;
+    return a.created_at.localeCompare(b.created_at);
+  });
+
+  const counters = new Map<string, number>();
+  const result = new Map<string, string>();
+
+  for (const row of sorted) {
+    const slug = row.events?.slug ?? "event";
+    const prefix = slugToPrefix(slug);
+    const dateIso = row.event_sessions?.starts_at ?? row.created_at;
+    const ymd = formatYmdJst(dateIso);
+    const groupKey = `${slug}-${ymd}`;
+    const n = (counters.get(groupKey) ?? 0) + 1;
+    counters.set(groupKey, n);
+    // 最低2桁。100件超は3桁、1000件超は4桁…と自然に伸びる
+    const serial = String(n).padStart(2, "0");
+    result.set(row.id, `${prefix}${ymd}-${serial}`);
+  }
+
+  return result;
+}
+
+function selectedPrice(row: ExportBookingRow): number {
+  return resolveBookingPrice(row);
 }
 
 export function buildBookingsCsv(rows: ExportBookingRow[]): string {
+  const bookingNumbers = assignBookingNumbers(rows);
+
   const header = [
-    "予約ID",
+    "申込番号",
     "講座名",
-    "講座slug",
     "名前",
     "メール",
     "電話",
@@ -132,10 +212,10 @@ export function buildBookingsCsv(rows: ExportBookingRow[]): string {
 
   const lines = rows.map((r) => {
     const answers = r.answers as BookingAnswers | undefined;
+    const price = resolveBookingPrice(r);
     return [
-      escapeCsv(r.id),
+      escapeCsv(bookingNumbers.get(r.id) ?? ""),
       escapeCsv(r.events?.title),
-      escapeCsv(r.events?.slug),
       escapeCsv(r.name),
       escapeCsv(r.email),
       escapeCsv(r.phone),
@@ -145,9 +225,7 @@ export function buildBookingsCsv(rows: ExportBookingRow[]): string {
       escapeCsv(answers?.enrollment_reason),
       escapeCsv(answers?.past_courses?.join(" / ")),
       escapeCsv(answers?.price_tier_label),
-      escapeCsv(
-        answers?.selected_price != null ? String(answers.selected_price) : ""
-      ),
+      escapeCsv(price > 0 ? String(price) : ""),
       escapeCsv(paymentStatusLabel(r.payment_status)),
       escapeCsv(r.receipt_issued_at ? formatJpDateTime(r.receipt_issued_at) : ""),
       escapeCsv(formatJpDateTime(r.created_at)),

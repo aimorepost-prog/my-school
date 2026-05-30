@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await supabaseAdmin
     .from("bookings")
-    .select("*, events(title, slug), event_sessions(starts_at, ends_at)")
+    .select("*, events(title, slug, price), event_sessions(starts_at, ends_at)")
     .order("created_at", { ascending: false });
 
   if (error) {
