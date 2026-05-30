@@ -1,0 +1,15 @@
+---
+description: my-schoolの変更完了時にObsidian開発ログを更新する
+alwaysApply: true
+---
+
+# Obsidian 開発ログ同期
+
+このリポジトリ（my-school）で作業を完了したら、Obsidian の保存版ログを更新する。
+
+**パス:** `g:\マイドライブ\obsidian\momo\02_Input\40_アプリ開発\my-school 開発・公開ログ.md`
+
+- **最終更新** 日付を更新
+- **更新履歴** に1行追加
+- 本番URL・機能・未対応リストを必要に応じて修正
+- 秘密情報（キー・パスワード）は書かない

@@ -215,11 +215,17 @@ export default async function AdminPage() {
                   >
                     メール設定
                   </Link>
+                  <Link
+                    href="/admin/export"
+                    className="text-sm bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg"
+                  >
+                    リスト出力
+                  </Link>
                   <a
                     href={`/api/export?event_id=${e.id}`}
                     className="text-sm bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg"
                   >
-                    CSV出力
+                    CSV（全件）
                   </a>
                   <Link
                     href={`/${e.slug}`}

@@ -26,6 +26,12 @@ export default function AdminHeader() {
           >
             お問い合わせ
           </Link>
+          <Link
+            href="/admin/export"
+            className="text-sm text-slate-500 hover:text-slate-900"
+          >
+            リスト出力
+          </Link>
         </div>
         <a
           href="/admin/logout"
